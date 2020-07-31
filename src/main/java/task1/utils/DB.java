@@ -13,7 +13,7 @@ public class DB {
     private Connection connection;
 
     static final String JDBC_DRIVER = "org.h2.Driver";
-    static final String DB_URL = "jdbc:h2:mem:swed";
+    static final String DB_URL = "jdbc:h2:mem:swed;MODE=MySQL;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE";
     static final String RESOURCE_PATH = "src/main/resources/";
     static final String DDL_FILE = "database.sql";
 

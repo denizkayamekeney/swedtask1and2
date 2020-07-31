@@ -1,0 +1,7 @@
+/target/
+/.idea/
+*.iml
+/src/main/resources/data.json
+/src/main/resources/formulas.md
+/src/main/resources/vehicles.csv
+/src/main/resources/vehicles_original.csv
