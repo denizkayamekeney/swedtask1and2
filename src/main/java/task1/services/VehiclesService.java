@@ -1,7 +1,7 @@
-package services;
+package task1.services;
 
-import dao.VehiclesDao;
-import dto.Vehicle;
+import task1.dao.VehiclesDao;
+import task1.dto.Vehicle;
 import task1.utils.Formulas;
 import task1.utils.VehicleCSVParser;
 

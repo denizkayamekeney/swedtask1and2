@@ -1,4 +1,4 @@
-package dto;
+package task1.dto;
 
 public class DataItem {
     Data data;

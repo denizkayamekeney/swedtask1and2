@@ -1,6 +1,6 @@
-package dao;
+package task1.dao;
 
-import dto.Vehicle;
+import task1.dto.Vehicle;
 
 import java.sql.*;
 import java.util.ArrayList;

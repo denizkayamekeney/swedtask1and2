@@ -1,10 +1,10 @@
 package task1;
 
-import dao.VehiclesDao;
-import dao.VehiclesDaoImpl;
-import dto.Data;
-import dto.Vehicle;
-import services.VehiclesService;
+import task1.dao.VehiclesDao;
+import task1.dao.VehiclesDaoImpl;
+import task1.dto.Data;
+import task1.dto.Vehicle;
+import task1.services.VehiclesService;
 import task1.utils.Constants;
 import task1.utils.DB;
 import task1.utils.DataParser;

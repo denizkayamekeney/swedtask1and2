@@ -1,6 +1,6 @@
 package task1.utils;
 
-import dto.Vehicle;
+import task1.dto.Vehicle;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 

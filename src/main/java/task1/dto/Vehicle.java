@@ -1,4 +1,4 @@
-package dto;
+package task1.dto;
 
 public class Vehicle {
     private int id;
