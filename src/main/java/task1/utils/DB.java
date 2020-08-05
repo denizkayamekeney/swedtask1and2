@@ -9,62 +9,53 @@ import java.sql.Statement;
 
 public class DB {
 
-    private static DB instance;
     private Connection connection;
 
-    static final String JDBC_DRIVER = "org.h2.Driver";
-    static final String DB_URL = "jdbc:h2:mem:swed;MODE=MySQL;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE";
-    static final String RESOURCE_PATH = "src/main/resources/";
-    static final String DDL_FILE = "database.sql";
+    final String JDBC_DRIVER = "org.h2.Driver";
+    final String DB_URL = "jdbc:h2:mem:swed;MODE=MySQL;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE";
 
 
     // Database credentials
-    static final String USER = "sa";
-    static final String PASS = "";
+    String user;
+    String pass;
 
-    // Private constructor for singleton pattern
-    private DB() throws SQLException {
+
+    public DB( String user, String pass) {
+        this.user = user;
+        this.pass = pass;
         try {
             Class.forName(JDBC_DRIVER);
-            this.connection = DriverManager.getConnection(DB_URL,USER,PASS);
+            this.connection = DriverManager.getConnection(DB_URL,user,pass);
             System.out.println("Database connection established...");
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException | SQLException ex) {
             System.out.println("Database Connection Creation Failed : " + ex.getMessage());
         }
+
     }
 
     /*
      *    Returns the connection object.
      * */
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
+        if (connection == null || connection.isClosed()){
+            connection = DriverManager.getConnection(DB_URL,this.user,this.pass);
+        }
         return connection;
     }
 
-    /*
-    *    Returns the database instance.
-    * */
-
-    public static DB getInstance() throws SQLException {
-        if (instance == null) {
-            instance = new DB();
-        } else if (instance.getConnection().isClosed()) {
-            instance = new DB();
-        }
-        return instance;
-    }
 
     /***
-     *    It reads the DDL file specified in RESOURCE_PATH + DDL_FILE
+     *    It reads the DDL file specified in ddl_file_path
      *    Executes it and Returns the connection object.
      *
      * */
 
-    public DB createDatabaseTables() {
-        try( Connection conn = getInstance().getConnection();
+    public DB createDatabaseTables(String ddl_file_path) {
+        try( Connection conn = getConnection();
              Statement stmt = conn.createStatement())
         {
-            String sql = Files.readString(Paths.get(RESOURCE_PATH + DDL_FILE));
+            String sql = Files.readString(Paths.get(ddl_file_path));
             stmt.executeUpdate(sql);
         } catch (Exception exception){
             System.out.println("System Stopped by: " + exception.getMessage());

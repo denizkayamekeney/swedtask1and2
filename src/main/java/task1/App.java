@@ -2,12 +2,11 @@ package task1;
 
 import task1.dao.VehiclesDao;
 import task1.dao.VehiclesDaoImpl;
-import task1.dto.Data;
+import task1.dto.CalculationCriterias;
+import task1.dto.CoeficientsData;
 import task1.dto.Vehicle;
 import task1.services.VehiclesService;
-import task1.utils.Constants;
-import task1.utils.DB;
-import task1.utils.DataParser;
+import task1.utils.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,13 +16,34 @@ public class App {
     VehiclesService vehiclesService;
 
     public static void main( String[] args ) throws SQLException, IOException {
-        DB.getInstance().createDatabaseTables();
+        DB db = new DB(Constants.USER,Constants.PASS)
+                    .createDatabaseTables(Constants.DDL_FILE_PATH);
+
         System.out.println("Tables are created...");
-        Data data = DataParser.loadDataFile(Constants.JSON_DATA_FILE_PATH);
+        CoeficientsData coeficientsData = DataParser.loadDataFile(Constants.JSON_DATA_FILE_PATH);
         System.out.println("Data file is parsed");
+        coeficientsData.addCoefficient("Test1",10d);
+        coeficientsData.addCoefficient("Test1",10d);
+        coeficientsData.addCoefficient("Test1",10d);
+        coeficientsData.deleteCoefficient("Test1111");
+
+        CascoCalculator cascoCalculator = new CascoCalculator(coeficientsData);
+        cascoCalculator.addCriterias(CalculationCriterias.Make,
+                CalculationCriterias.VehicleAge,
+                CalculationCriterias.VehicleValue);
+
         App app = new App();
-        VehiclesDao vehiclesDao = new VehiclesDaoImpl(DB.getInstance().getConnection());
-        VehiclesService vehiclesService = new VehiclesService(vehiclesDao);
+
+        VehiclesDao vehiclesDao = new VehiclesDaoImpl(db.getConnection());
+
+        LogHelper logHelper = new LogHelper(Constants.ERROR_FILE_PATH);
+
+        VehicleCSVParser vehicleCSVParser = new VehicleCSVParser(logHelper);
+
+        VehiclesService vehiclesService = new VehiclesService(vehiclesDao,
+                vehicleCSVParser,
+                logHelper);
+
         app.vehiclesService =  vehiclesService;
         int a;
         try {
@@ -36,7 +56,8 @@ public class App {
 
         List<Vehicle> vehicles = vehiclesService.findAll();
         System.out.println(vehicles.size());
-
-        vehiclesService.calculateAllKasko();
+        Vehicle vehicle = vehiclesService.findById(1);
+        System.out.println(vehicle);
+        System.out.println(vehiclesService.findById(1));
     }
 }

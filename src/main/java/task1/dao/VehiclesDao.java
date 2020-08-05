@@ -9,4 +9,5 @@ public interface VehiclesDao {
     boolean insert( Vehicle vehicle) throws SQLException;
     boolean update( Vehicle vehicle) throws SQLException;
     List<Vehicle> findAll();
+    Vehicle findById(int id);
 }

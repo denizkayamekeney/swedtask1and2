@@ -1,20 +1,20 @@
 package task1.dto;
 
 public class DataItem {
-    Data data;
+    CoeficientsData data;
 
-    public DataItem( Data data ) {
+    public DataItem( CoeficientsData data ) {
         this.data = data;
     }
 
     public DataItem() {
     }
 
-    public Data getData() {
+    public CoeficientsData getData() {
         return data;
     }
 
-    public void setData( Data data ) {
+    public void setData( CoeficientsData data ) {
         this.data = data;
     }
 }

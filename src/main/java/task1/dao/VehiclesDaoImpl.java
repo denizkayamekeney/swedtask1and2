@@ -14,7 +14,7 @@ public class VehiclesDaoImpl implements VehiclesDao {
     }
 
     @Override
-    public boolean insert( Vehicle vehicle ) {
+    public boolean insert( Vehicle vehicle ) throws SQLException {
 
         String SQL = "INSERT INTO VEHICLES(id, plate_number, first_registration, purchase_prise, producer, milage, previous_indemnity) "
                 + "VALUES(?,?,?,?,?,?,?)";
@@ -22,17 +22,14 @@ public class VehiclesDaoImpl implements VehiclesDao {
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
 
             pstmt.setInt(1, vehicle.getId());
-            pstmt.setString(2, vehicle.getPlate_number());
-            pstmt.setInt(3, vehicle.getFirst_registration());
-            pstmt.setDouble(4, vehicle.getPurchase_prise());
+            pstmt.setString(2, vehicle.getPlateNumber());
+            pstmt.setInt(3, vehicle.getFirstRegistration());
+            pstmt.setDouble(4, vehicle.getPurchasePrise());
             pstmt.setString(5, vehicle.getProducer());
             pstmt.setInt(6, vehicle.getMilage());
-            pstmt.setDouble(7, vehicle.getPrevious_indemnity());
+            pstmt.setDouble(7, vehicle.getPreviousIndemnity());
 
             int affectedRows = pstmt.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return false;
         }
         return true;
     }
@@ -46,16 +43,14 @@ public class VehiclesDaoImpl implements VehiclesDao {
 
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
 
-            pstmt.setString(1, vehicle.getPlate_number());
-            pstmt.setInt(2, vehicle.getFirst_registration());
-            pstmt.setDouble(3, vehicle.getPurchase_prise());
+            pstmt.setString(1, vehicle.getPlateNumber());
+            pstmt.setInt(2, vehicle.getFirstRegistration());
+            pstmt.setDouble(3, vehicle.getPurchasePrise());
             pstmt.setString(4, vehicle.getProducer());
             pstmt.setInt(5, vehicle.getMilage());
-            pstmt.setDouble(6, vehicle.getPrevious_indemnity());
+            pstmt.setDouble(6, vehicle.getPreviousIndemnity());
             pstmt.setInt(7, vehicle.getId());
-
             int affectedRows = pstmt.executeUpdate();
-//            System.out.println("inserted" + vehicle.getId());
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
             return false;
@@ -65,28 +60,45 @@ public class VehiclesDaoImpl implements VehiclesDao {
 
     @Override
     public List<Vehicle> findAll() {
-
         String sql = "SELECT * FROM vehicles";
         List<Vehicle> vehicles = new ArrayList<>();
-
         try (Statement statement = connection.createStatement()) {
-
             ResultSet resultSet = statement.executeQuery(sql);
-
             while (resultSet.next()) {
-                Vehicle vehicle = new Vehicle();
-                vehicle.setId(resultSet.getInt("id"));
-                vehicle.setPlate_number(resultSet.getString("plate_number"));
-                vehicle.setFirst_registration(resultSet.getInt("first_registration"));
-                vehicle.setPurchase_prise(resultSet.getInt("purchase_prise"));
-                vehicle.setProducer(resultSet.getString("producer"));
-                vehicle.setMilage(resultSet.getInt("milage"));
-                vehicle.setPrevious_indemnity(resultSet.getInt("previous_indemnity"));
-                vehicles.add(vehicle);
+                vehicles.add(createVehicleORM(resultSet));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return vehicles;
+    }
+
+    @Override
+    public Vehicle findById( int id ) {
+        String sql = "SELECT * FROM VEHICLES WHERE id=?";
+        Vehicle vehicle = null;
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, id);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next())
+                vehicle = createVehicleORM(resultSet);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return vehicle;
+    }
+
+    private Vehicle createVehicleORM( ResultSet resultSet ) throws SQLException {
+        Vehicle vehicle = null;
+        vehicle = new Vehicle();
+        vehicle.setId(resultSet.getInt("id"));
+        vehicle.setPlateNumber(resultSet.getString("plate_number"));
+        vehicle.setFirstRegistration(resultSet.getInt("first_registration"));
+        vehicle.setPurchasePrise(resultSet.getInt("purchase_prise"));
+        vehicle.setProducer(resultSet.getString("producer"));
+        vehicle.setMilage(resultSet.getInt("milage"));
+        vehicle.setPreviousIndemnity(resultSet.getInt("previous_indemnity"));
+        return vehicle;
     }
 }

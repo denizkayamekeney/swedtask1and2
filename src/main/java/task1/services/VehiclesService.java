@@ -2,18 +2,50 @@ package task1.services;
 
 import task1.dao.VehiclesDao;
 import task1.dto.Vehicle;
-import task1.utils.Formulas;
+import task1.utils.LogHelper;
 import task1.utils.VehicleCSVParser;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 public class VehiclesService {
     VehiclesDao vehiclesDao;
+    VehicleCSVParser vehicleCSVParser;
+    LogHelper logHelper;
 
-    public VehiclesService( VehiclesDao vehiclesDao ){
+    public VehiclesService( VehiclesDao vehiclesDao,
+                            VehicleCSVParser vehicleCSVParser,
+                            LogHelper logHelper){
         this.vehiclesDao = vehiclesDao;
+        this.vehicleCSVParser = vehicleCSVParser;
+        this.logHelper = logHelper;
+    }
+
+    public LogHelper getLogHelper() {
+        return logHelper;
+    }
+
+    public void setLogHelper( LogHelper logHelper ) {
+        this.logHelper = logHelper;
+    }
+
+    public VehiclesDao getVehiclesDao() {
+        return vehiclesDao;
+    }
+
+    public void setVehiclesDao( VehiclesDao vehiclesDao ) {
+        this.vehiclesDao = vehiclesDao;
+    }
+
+    public VehicleCSVParser getVehicleCSVParser() {
+        return vehicleCSVParser;
+    }
+
+    public void setVehicleCSVParser( VehicleCSVParser vehicleCSVParser ) {
+        this.vehicleCSVParser = vehicleCSVParser;
     }
 
     public boolean save( Vehicle vehicle) throws SQLException{
@@ -24,22 +56,22 @@ public class VehiclesService {
         return vehiclesDao.findAll();
     }
 
-    public Vehicle calculateKasko(Vehicle vehicle){
-        vehicle.setPrevious_indemnity(Formulas.getPurchasePrisePercentage(2020 - vehicle.getFirst_registration(),vehicle.getMilage()));
-        return vehicle;
+    public Vehicle findById(int id){
+        return vehiclesDao.findById(id);
     }
 
-    public boolean calculateAllKasko() throws IOException, SQLException {
-        for (Vehicle vehicle : vehiclesDao.findAll()){
-            vehiclesDao.update(calculateKasko(vehicle));
-        }
-        return true;
-    }
 
-    public boolean loadVehicleFromCsvFile(String csvFileWithPath) throws IOException, SQLException {
-        List<Vehicle> list = VehicleCSVParser.parseData(csvFileWithPath);
-        for (Vehicle vehicle : list) {
-            vehiclesDao.insert(vehicle);
+    public boolean loadVehicleFromCsvFile(String csvFileWithPath) throws IOException {
+        List<Vehicle> list = vehicleCSVParser.parseData(csvFileWithPath);
+
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), true))) {
+            for (Vehicle vehicle : list) {
+                try {
+                    vehiclesDao.insert(vehicle);
+                } catch (Exception exception) {
+                    writer.append(logHelper.objectExceptionToString(exception, vehicle));
+                }
+            }
         }
         return true;
     }
