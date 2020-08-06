@@ -1,5 +1,7 @@
 package task.util;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.junit.jupiter.api.*;
 import task1.dao.VehicleHelper;
 import task1.dto.Vehicle;
@@ -7,13 +9,12 @@ import task1.utils.Constants;
 import task1.utils.LogHelper;
 import task1.utils.VehicleCSVParser;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -94,7 +95,7 @@ public class VehicleCSVParserTest {
 
         List<Vehicle> vehicles = List.of(vehicle);
         vehicleCSVParser.writeToCSV(vehicles,"MyFile.csv");
-        var vehicles2 = vehicleCSVParser.parseDataForTest("MyFile.csv");
+        var vehicles2 = parseDataForTest("MyFile.csv");
         Assertions.assertEquals(vehicles2.get(0),vehicle,"The vehicle objects needs to be equal!!");
     }
 
@@ -111,4 +112,33 @@ public class VehicleCSVParserTest {
                 + vehicle.getPurchasePrise() + "," + vehicle.getProducer() + "," + vehicle.getMilage() + "," +
                 vehicle.getPreviousIndemnity();
     }
+
+    /**
+     *   It parses the CSV file with casco_with_indemnity and casco_without_indemnity
+     *   in its header into Vehicle object list.
+     */
+
+    private List<Vehicle> parseDataForTest( String csvFileWithPath ) throws IOException {
+        Reader in = new FileReader(csvFileWithPath);
+        List<Vehicle> vehicles = new ArrayList<>();
+
+        Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                .withFirstRecordAsHeader().withHeader(VehicleCSVParser.VehicleTestHeaders.class).parse(in);
+        for (CSVRecord record : records) {
+            Vehicle vehicle = new Vehicle(
+                    Integer.parseInt(record.get(VehicleCSVParser.VehicleTestHeaders.id)), // id
+                    record.get(VehicleCSVParser.VehicleTestHeaders.plate_number),  // plate_number
+                    Integer.parseInt(record.get(VehicleCSVParser.VehicleTestHeaders.first_registration)),  // first_registration
+                    Double.parseDouble(record.get(VehicleCSVParser.VehicleTestHeaders.purchase_prise)),  // first_registration
+                    record.get(VehicleCSVParser.VehicleTestHeaders.producer),  // first_registration
+                    Integer.parseInt(record.get(VehicleCSVParser.VehicleTestHeaders.milage)),  // first_registration
+                    Double.parseDouble(record.get(VehicleCSVParser.VehicleTestHeaders.previous_indemnity))
+            );
+            vehicle.setCascoWithIndemnity(Double.parseDouble(record.get(VehicleCSVParser.VehicleTestHeaders.casco_with_indemnity)));
+            vehicle.setCascoWithoutIndemnity(Double.parseDouble(record.get(VehicleCSVParser.VehicleTestHeaders.casco_without_indemnity)));
+            vehicles.add(vehicle);
+        }
+        return vehicles;
+    }
+
 }

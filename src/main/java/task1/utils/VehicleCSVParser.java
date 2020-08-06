@@ -73,32 +73,6 @@ public class VehicleCSVParser {
         return list;
     }
 
-    /**
-     * It parses the
-     */
-
-    public List<Vehicle> parseDataForTest( String csvFileWithPath ) throws IOException {
-        Reader in = new FileReader(csvFileWithPath);
-        List<Vehicle> vehicles = new ArrayList<>();
-
-        Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                .withFirstRecordAsHeader().withHeader(VehicleTestHeaders.class).parse(in);
-        for (CSVRecord record : records) {
-            Vehicle vehicle = new Vehicle(
-                    Integer.parseInt(record.get(VehicleTestHeaders.id)), // id
-                    record.get(VehicleTestHeaders.plate_number),  // plate_number
-                    Integer.parseInt(record.get(VehicleTestHeaders.first_registration)),  // first_registration
-                    Double.parseDouble(record.get(VehicleTestHeaders.purchase_prise)),  // first_registration
-                    record.get(VehicleTestHeaders.producer),  // first_registration
-                    Integer.parseInt(record.get(VehicleTestHeaders.milage)),  // first_registration
-                    Double.parseDouble(record.get(VehicleTestHeaders.previous_indemnity))
-            );
-            vehicle.setCascoWithIndemnity(Double.parseDouble(record.get(VehicleTestHeaders.casco_with_indemnity)));
-            vehicle.setCascoWithoutIndemnity(Double.parseDouble(record.get(VehicleTestHeaders.casco_without_indemnity)));
-            vehicles.add(vehicle);
-        }
-        return vehicles;
-    }
 
     /**
      * It writes the vehicles list into a file in CSV format with the following header.
