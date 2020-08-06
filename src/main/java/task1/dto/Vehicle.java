@@ -8,12 +8,32 @@ public class Vehicle {
 
     private String plate_number;
     private int first_registration;
-    private int purchase_prise;
+    private double purchase_prise;
     private String producer;
     private int milage;
     private double previous_indemnity;
 
-    public Vehicle( int id, String plate_number, int first_registration, int purchase_prise, String producer, int milage, double previous_indemnity ) {
+    private double casco_without_indemnity;
+    private double casco_with_indemnity;
+
+    public double getCascoWithoutIndemnity() {
+        return casco_without_indemnity;
+    }
+
+    public void setCascoWithoutIndemnity( double casco_without_indemnity ) {
+        this.casco_without_indemnity = casco_without_indemnity;
+    }
+
+    public double getCascoWithIndemnity() {
+        return casco_with_indemnity;
+    }
+
+    public void setCascoWithIndemnity( double casco_with_indemnity ) {
+        this.casco_with_indemnity = casco_with_indemnity;
+    }
+
+
+    public Vehicle( int id, String plate_number, int first_registration, double purchase_prise, String producer, int milage, double previous_indemnity ) {
         this.id = id;
         this.plate_number = plate_number;
         this.first_registration = first_registration;
@@ -51,11 +71,11 @@ public class Vehicle {
         this.first_registration = first_registration;
     }
 
-    public int getPurchasePrise() {
+    public double getPurchasePrise() {
         return purchase_prise;
     }
 
-    public void setPurchasePrise( int purchase_prise ) {
+    public void setPurchasePrise( double purchase_prise ) {
         this.purchase_prise = purchase_prise;
     }
 
@@ -86,6 +106,10 @@ public class Vehicle {
     public int getAge(){
         return Calendar.getInstance().get(Calendar.YEAR) - getFirstRegistration();
     }
+
+    /**
+     *   It overriden because we are using in object comperation.
+     */
     @Override
     public boolean equals( Object o ) {
         if (this == o) return true;
@@ -97,9 +121,14 @@ public class Vehicle {
                 getMilage() == vehicle.getMilage() &&
                 Double.compare(vehicle.getPreviousIndemnity(), getPreviousIndemnity()) == 0 &&
                 getPlateNumber().equals(vehicle.getPlateNumber()) &&
-                getProducer().equals(vehicle.getProducer());
+                getProducer().equals(vehicle.getProducer()) &&
+                Double.compare(vehicle.getCascoWithIndemnity(), getCascoWithIndemnity()) == 0 &&
+                Double.compare(vehicle.getCascoWithoutIndemnity(), getCascoWithoutIndemnity()) == 0;
     }
 
+    /**
+     *   It overriden because we are using in HashMap.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getPlateNumber(), getFirstRegistration(), getPurchasePrise(), getProducer(), getMilage(), getPreviousIndemnity());
@@ -113,7 +142,9 @@ public class Vehicle {
                 .append(", purchase_prise : " + this.getPurchasePrise())
                 .append(", producer : " + this.getProducer())
                 .append(", milage : " + this.getMilage())
-                .append(", previous_indemnity : " + this.getPreviousIndemnity() + "]")
+                .append(", previous_indemnity : " + this.getPreviousIndemnity() )
+                .append(", casco_without_indemnity : " + this.getCascoWithoutIndemnity())
+                .append(", casco_with_indemnity : " + this.getCascoWithIndemnity() + "]")
                 .toString();
     }
 

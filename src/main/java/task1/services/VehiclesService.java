@@ -1,7 +1,9 @@
 package task1.services;
 
 import task1.dao.VehiclesDao;
+import task1.dto.CalculationCriterias;
 import task1.dto.Vehicle;
+import task1.utils.CascoCalculator;
 import task1.utils.LogHelper;
 import task1.utils.VehicleCSVParser;
 
@@ -12,16 +14,33 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class VehiclesService {
+
     VehiclesDao vehiclesDao;
+
     VehicleCSVParser vehicleCSVParser;
+
     LogHelper logHelper;
 
+    CascoCalculator cascoCalculator;
+
+    // Constructor
     public VehiclesService( VehiclesDao vehiclesDao,
                             VehicleCSVParser vehicleCSVParser,
-                            LogHelper logHelper){
+                            LogHelper logHelper,
+                            CascoCalculator cascoCalculator ) {
+
         this.vehiclesDao = vehiclesDao;
         this.vehicleCSVParser = vehicleCSVParser;
         this.logHelper = logHelper;
+        this.cascoCalculator = cascoCalculator;
+    }
+
+    public CascoCalculator getCascoCalculator() {
+        return cascoCalculator;
+    }
+
+    public void setCascoCalculator( CascoCalculator cascoCalculator ) {
+        this.cascoCalculator = cascoCalculator;
     }
 
     public LogHelper getLogHelper() {
@@ -48,24 +67,51 @@ public class VehiclesService {
         this.vehicleCSVParser = vehicleCSVParser;
     }
 
-    public boolean save( Vehicle vehicle) throws SQLException{
+    /**
+     *   Insert a single vehicle into database
+     */
+
+    public boolean insert( Vehicle vehicle ) throws SQLException {
         return vehiclesDao.insert(vehicle);
     }
 
-    public List<Vehicle> findAll(){
+    /**
+     *   Updates single vehicle in database
+     */
+    public boolean update( Vehicle vehicle ) throws SQLException {
+        return vehiclesDao.update(vehicle);
+    }
+
+    /**
+     *   Returns all data in the table
+     */
+    public List<Vehicle> findAll() {
         return vehiclesDao.findAll();
     }
 
-    public Vehicle findById(int id){
+    /**
+     *   Returns the vehicle if exist in database with a given id.
+     */
+    public Vehicle findById( int id ) {
         return vehiclesDao.findById(id);
     }
 
 
-    public boolean loadVehicleFromCsvFile(String csvFileWithPath) throws IOException {
-        List<Vehicle> list = vehicleCSVParser.parseData(csvFileWithPath);
+    /**
+     *   It loads the vehicles in a given csv file into the memory.
+     */
+    public List<Vehicle> loadVehicleFromCsvFile( String csvFileWithPath ) throws IOException {
+        List<Vehicle> vehicles = vehicleCSVParser.parseData(csvFileWithPath);
 
-        try(BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), true))) {
-            for (Vehicle vehicle : list) {
+        return vehicles;
+    }
+
+    /**
+     *   It inserts all coming vehicles to the database!.
+     */
+    public boolean insertVehicles( List<Vehicle> vehicles ) throws IOException {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), true))) {
+            for (Vehicle vehicle : vehicles) {
                 try {
                     vehiclesDao.insert(vehicle);
                 } catch (Exception exception) {
@@ -76,5 +122,33 @@ public class VehiclesService {
         return true;
     }
 
+    /**
+     *   Updates all coming vehicles to the database!.
+     */
+    public void updateVehicles( List<Vehicle> vehicles ) throws IOException, SQLException {
+        for (Vehicle vehicle : vehicles) {
+            this.update(vehicle);
+        }
+    }
 
+    /**
+     *   Calculates the vehicles casco according to given criteria!.
+     */
+    public boolean calculateVehiclesCasco( List<Vehicle> vehicles ) throws IOException {
+        for (Vehicle vehicle : vehicles) {
+            if (cascoCalculator.getCriterias().contains(CalculationCriterias.PreviousIndemnity)) {
+                vehicle.setCascoWithIndemnity(cascoCalculator.getAnnualFee(vehicle));
+            } else {
+                vehicle.setCascoWithoutIndemnity(cascoCalculator.getAnnualFee(vehicle));
+            }
+        }
+        return true;
+    }
+
+    /**
+     *   Saves the vehicles to the given file in csv format.
+     */
+    public boolean saveVehiclesToCSVFile( List<Vehicle> vehicles, String fileName ) throws IOException {
+        return vehicleCSVParser.writeToCSV(vehicles, fileName);
+    }
 }

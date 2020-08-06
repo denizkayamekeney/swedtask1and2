@@ -1,0 +1,14 @@
+{
+  "data": {
+    "coefficients": {
+      "vehicle_age": 1.1
+    },
+    "make_coefficients": {
+      "volvo": true
+    },
+    "avg_purchase_price": {
+      "PORSCHE": 49687,
+      "BMW": 46633
+    }
+  }
+}

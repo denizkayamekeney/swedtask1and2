@@ -7,17 +7,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VehiclesDaoImpl implements VehiclesDao {
+    // It holds the connection object to database.
     Connection connection;
 
     public VehiclesDaoImpl( Connection connection ) {
         this.connection = connection;
     }
 
+    /**
+     *   It inserts the coming vehicle object to vehicles table.
+     */
+
     @Override
     public boolean insert( Vehicle vehicle ) throws SQLException {
-
-        String SQL = "INSERT INTO VEHICLES(id, plate_number, first_registration, purchase_prise, producer, milage, previous_indemnity) "
-                + "VALUES(?,?,?,?,?,?,?)";
+        String SQL = "INSERT INTO VEHICLES(id, plate_number, first_registration, purchase_prise, producer, milage, " +
+                "previous_indemnity, casco_without_indemnity, casco_with_indemnity) "
+                + "VALUES(?,?,?,?,?,?,?,?,?)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
 
@@ -28,17 +33,22 @@ public class VehiclesDaoImpl implements VehiclesDao {
             pstmt.setString(5, vehicle.getProducer());
             pstmt.setInt(6, vehicle.getMilage());
             pstmt.setDouble(7, vehicle.getPreviousIndemnity());
+            pstmt.setDouble(8, vehicle.getCascoWithoutIndemnity());
+            pstmt.setDouble(9, vehicle.getCascoWithIndemnity());
 
             int affectedRows = pstmt.executeUpdate();
         }
         return true;
     }
 
+    /**
+     *   It updates the existing record in vehicles table.
+     */
     @Override
     public boolean update( Vehicle vehicle ) {
         String SQL = "UPDATE VEHICLES SET plate_number=? , " +
                 "first_registration=?, purchase_prise=?, producer=?, " +
-                "milage=?, previous_indemnity=? " +
+                "milage=?, previous_indemnity=?, casco_without_indemnity=? , casco_with_indemnity=? " +
                 "WHERE id =?  ";
 
         try (PreparedStatement pstmt = connection.prepareStatement(SQL)) {
@@ -49,7 +59,9 @@ public class VehiclesDaoImpl implements VehiclesDao {
             pstmt.setString(4, vehicle.getProducer());
             pstmt.setInt(5, vehicle.getMilage());
             pstmt.setDouble(6, vehicle.getPreviousIndemnity());
-            pstmt.setInt(7, vehicle.getId());
+            pstmt.setDouble(7, vehicle.getCascoWithoutIndemnity());
+            pstmt.setDouble(8, vehicle.getCascoWithIndemnity());
+            pstmt.setInt(9, vehicle.getId());
             int affectedRows = pstmt.executeUpdate();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
@@ -58,6 +70,9 @@ public class VehiclesDaoImpl implements VehiclesDao {
         return true;
     }
 
+    /**
+     *   It rens all data as a list from Vehicles table.
+     */
     @Override
     public List<Vehicle> findAll() {
         String sql = "SELECT * FROM vehicles";
@@ -73,6 +88,9 @@ public class VehiclesDaoImpl implements VehiclesDao {
         return vehicles;
     }
 
+    /**
+     *   It returns the vehicle if exists in Vehicles table by given id.
+     */
     @Override
     public Vehicle findById( int id ) {
         String sql = "SELECT * FROM VEHICLES WHERE id=?";
@@ -89,6 +107,9 @@ public class VehiclesDaoImpl implements VehiclesDao {
         return vehicle;
     }
 
+    /**
+     *   It creates a Vehicle object from resultset.
+     */
     private Vehicle createVehicleORM( ResultSet resultSet ) throws SQLException {
         Vehicle vehicle = null;
         vehicle = new Vehicle();
@@ -99,6 +120,8 @@ public class VehiclesDaoImpl implements VehiclesDao {
         vehicle.setProducer(resultSet.getString("producer"));
         vehicle.setMilage(resultSet.getInt("milage"));
         vehicle.setPreviousIndemnity(resultSet.getInt("previous_indemnity"));
+        vehicle.setCascoWithoutIndemnity(resultSet.getDouble("casco_without_indemnity"));
+        vehicle.setCascoWithIndemnity(resultSet.getDouble("casco_with_indemnity"));
         return vehicle;
     }
 }

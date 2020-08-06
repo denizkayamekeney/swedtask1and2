@@ -11,6 +11,9 @@ public class DataParser {
     static ObjectMapper objectMapper = new ObjectMapper();
     static CoeficientsData data;
 
+    /**
+     *   It parses the JSON data file onto object!
+     */
     public static CoeficientsData loadDataFile(String fileWithPath) throws IOException {
         DataItem dataItem = objectMapper.readValue(new File(fileWithPath), DataItem.class);
         data =  dataItem.getData();

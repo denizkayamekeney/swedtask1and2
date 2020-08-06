@@ -6,8 +6,6 @@ create table vehicles (
     producer varchar(50),
     milage integer,
     previous_indemnity double,
-    casco_without_indemnity double,
-    casco_with_indemnity double,
     primary key ( id )
  );
 CREATE UNIQUE INDEX PLATE_NUMBER_UIX

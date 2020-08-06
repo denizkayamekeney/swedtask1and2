@@ -8,8 +8,10 @@ import java.util.*;
 
 public class CascoCalculator {
 
+    // It hold the data JSON as an object for taking calculation parameters.
     CoeficientsData cooefficientData;
 
+    // It holds the risk criteria that will be taken into account in casco calculation.
     private HashSet<CalculationCriterias>
             criterias = new HashSet<>();
 
@@ -46,7 +48,9 @@ public class CascoCalculator {
         }
     }
 
-
+    /**
+     *   It calculates the purchase prise percentage according given formula!
+     */
     public static double getPurchasePrisePercentage( int age, int mileage ) {
         return 102 + (-7.967) * age +
                 0.8337334 * Math.pow(age, 2) +
@@ -57,6 +61,11 @@ public class CascoCalculator {
                 (-1.813681e-16) * Math.pow(mileage, 3);
     }
 
+    /**
+     *   It returns the annual casco fee for a vehicle according the risk criteria!
+     *   It  loops all risk criterias given in "criterias" set and adds up. If the
+     *   Producer does not in avg_purchase_prise list in data file, then it is skipping.
+     */
     public double getAnnualFee( Vehicle vehicle ) {
         double sumRiskValues = 0;
 
@@ -87,7 +96,6 @@ public class CascoCalculator {
             }
         }
         return sumRiskValues *= makeRisk;
-
     }
 
 

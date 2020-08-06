@@ -1,4 +1,5 @@
-create table vehicles (
+drop table if exists test_vehicles;
+create table test_vehicles (
     id integer not null,
     plate_number varchar(10) not null,
     first_registration integer not null,
@@ -6,9 +7,7 @@ create table vehicles (
     producer varchar(50),
     milage integer,
     previous_indemnity double,
-    casco_without_indemnity double,
-    casco_with_indemnity double,
     primary key ( id )
  );
-CREATE UNIQUE INDEX PLATE_NUMBER_UIX
-ON  vehicles ( plate_number ASC);
+CREATE UNIQUE INDEX PLATE_NUMBER__TEST_UIX
+ON  test_vehicles ( plate_number ASC)

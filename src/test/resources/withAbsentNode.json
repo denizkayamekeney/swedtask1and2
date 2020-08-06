@@ -1,0 +1,11 @@
+{
+  "data": {
+    "make_coefficients": {
+      "volvo": 0.95M
+    },
+    "avg_purchase_price": {
+      "PORSCHE": 49687,
+      "BMW": 46633,
+    }
+  }
+}
