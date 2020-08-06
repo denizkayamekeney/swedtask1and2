@@ -7,8 +7,6 @@ import task1.dto.CoeficientsData;
 import task1.services.VehiclesService;
 import task1.utils.*;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,45 +19,45 @@ public class App {
         return vehiclesService;
     }
 
-    public static void main( String[] args ) throws SQLException, IOException {
+    public static void main( String[] args ) {
 
         App app = new App();
         app.initializeApp();
         VehiclesService vehiclesService = app.getVehiclesService();
 
-            // Loading the vehicles from vehicle file
-            var vehicles = vehiclesService.loadVehicleFromCsvFile(CSV_DATA_FILE_PATH);
-            System.out.println("Vehicles data is parsed from " + CSV_DATA_FILE_PATH + " file.");
+        // Loading the vehicles from vehicle file
+        var vehicles = vehiclesService.loadVehicleFromCsvFile(CSV_DATA_FILE_PATH);
+        System.out.println("Vehicles data is parsed from " + CSV_DATA_FILE_PATH + " file.");
 
-            // Inserting the vehicles to the database..
-            vehiclesService.insertVehicles(vehicles);
-            System.out.println("Vehicles are inserted to databases!");
+        // Inserting the vehicles to the database..
+        vehiclesService.insertVehicles(vehicles);
+        System.out.println("Vehicles are inserted to databases!");
 
-            // Calculating casco result without indemnity and writing to the file
-            vehiclesService.calculateVehiclesCasco(vehicles);
-            vehiclesService.saveVehiclesToCSVFile(vehicles, "CascoWithoutIndemnity.csv");
-            System.out.println("Cascos are calculated without indemnity and wrtten to CascoWithoutIndemnity.csv file!");
+        // Calculating casco result without indemnity and writing to the file
+        vehiclesService.calculateVehiclesCasco(vehicles);
+        vehiclesService.saveVehiclesToCSVFile(vehicles, "CascoWithoutIndemnity.csv");
+        System.out.println("Cascos are calculated without indemnity and wrtten to CascoWithoutIndemnity.csv file!");
 
 
-            // Calculating casco result with indemnity and writing to the file
-            // We are setting the casco calculating criterias.
-            vehiclesService.getCascoCalculator().setCriterias(new HashSet<CalculationCriterias>(
-                    Set.of(CalculationCriterias.Make,
-                            CalculationCriterias.VehicleAge,
-                            CalculationCriterias.VehicleValue,
-                            CalculationCriterias.PreviousIndemnity)));
+        // Calculating casco result with indemnity and writing to the file
+        // We are setting the casco calculating criterias.
+        vehiclesService.getCascoCalculator().setCriterias(new HashSet<CalculationCriterias>(
+                Set.of(CalculationCriterias.Make,
+                        CalculationCriterias.VehicleAge,
+                        CalculationCriterias.VehicleValue,
+                        CalculationCriterias.PreviousIndemnity)));
 
-            vehiclesService.calculateVehiclesCasco(vehicles);
-            vehiclesService.saveVehiclesToCSVFile(vehicles, "CascoWithIndemnity.csv");
-            System.out.println("Cascos are calculated with indemnity and wrtten to CascoWithIndemnity.csv file!");
+        vehiclesService.calculateVehiclesCasco(vehicles);
+        vehiclesService.saveVehiclesToCSVFile(vehicles, "CascoWithIndemnity.csv");
+        System.out.println("Cascos are calculated with indemnity and wrtten to CascoWithIndemnity.csv file!");
 
-            // Updating the vehicle values in database.
-            vehiclesService.updateVehicles(vehicles);
-            System.out.println("The vehicles data updated to database!");
+        // Updating the vehicle values in database.
+        vehiclesService.updateVehicles(vehicles);
+        System.out.println("The vehicles data updated to database!");
 
     }
 
-    public void initializeApp() throws IOException, SQLException {
+    public void initializeApp() {
         DB db = new DB(USER, PASS).createDatabaseTables(DDL_FILE_PATH);
         System.out.println("Database is initialised!\nVehicle Table is created!");
         CoeficientsData coeficientsData = DataParser.loadDataFile(JSON_DATA_FILE_PATH);
@@ -81,6 +79,5 @@ public class App {
                 cascoCalculator);
 
         this.vehiclesService = vehiclesService;
-
     }
 }

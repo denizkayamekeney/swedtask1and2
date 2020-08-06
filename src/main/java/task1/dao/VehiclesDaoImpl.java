@@ -1,5 +1,6 @@
 package task1.dao;
 
+import task1.DbAppException;
 import task1.dto.Vehicle;
 
 import java.sql.*;
@@ -15,11 +16,11 @@ public class VehiclesDaoImpl implements VehiclesDao {
     }
 
     /**
-     *   It inserts the coming vehicle object to vehicles table.
+     * It inserts the coming vehicle object to vehicles table.
      */
 
     @Override
-    public boolean insert( Vehicle vehicle ) throws SQLException {
+    public boolean insert( Vehicle vehicle ) {
         String SQL = "INSERT INTO VEHICLES(id, plate_number, first_registration, purchase_prise, producer, milage, " +
                 "previous_indemnity, casco_without_indemnity, casco_with_indemnity) "
                 + "VALUES(?,?,?,?,?,?,?,?,?)";
@@ -37,12 +38,14 @@ public class VehiclesDaoImpl implements VehiclesDao {
             pstmt.setDouble(9, vehicle.getCascoWithIndemnity());
 
             int affectedRows = pstmt.executeUpdate();
+        } catch (Exception exception) {
+            throw new DbAppException("Unable insert into vehicle table", exception);
         }
         return true;
     }
 
     /**
-     *   It updates the existing record in vehicles table.
+     * It updates the existing record in vehicles table.
      */
     @Override
     public boolean update( Vehicle vehicle ) {
@@ -63,15 +66,14 @@ public class VehiclesDaoImpl implements VehiclesDao {
             pstmt.setDouble(8, vehicle.getCascoWithIndemnity());
             pstmt.setInt(9, vehicle.getId());
             int affectedRows = pstmt.executeUpdate();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return false;
+        } catch (SQLException exception) {
+            throw new DbAppException("Unable update vehicle table", exception);
         }
         return true;
     }
 
     /**
-     *   It rens all data as a list from Vehicles table.
+     * It rens all data as a list from Vehicles table.
      */
     @Override
     public List<Vehicle> findAll() {
@@ -82,14 +84,14 @@ public class VehiclesDaoImpl implements VehiclesDao {
             while (resultSet.next()) {
                 vehicles.add(createVehicleORM(resultSet));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            throw new DbAppException("Unable select from vehicle table", exception);
         }
         return vehicles;
     }
 
     /**
-     *   It returns the vehicle if exists in Vehicles table by given id.
+     * It returns the vehicle if exists in Vehicles table by given id.
      */
     @Override
     public Vehicle findById( int id ) {
@@ -101,27 +103,31 @@ public class VehiclesDaoImpl implements VehiclesDao {
             ResultSet resultSet = pstmt.executeQuery();
             if (resultSet.next())
                 vehicle = createVehicleORM(resultSet);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException exception) {
+            throw new DbAppException("Unable select from vehicle table", exception);
         }
         return vehicle;
     }
 
     /**
-     *   It creates a Vehicle object from resultset.
+     * It creates a Vehicle object from resultset.
      */
-    private Vehicle createVehicleORM( ResultSet resultSet ) throws SQLException {
-        Vehicle vehicle = null;
-        vehicle = new Vehicle();
-        vehicle.setId(resultSet.getInt("id"));
-        vehicle.setPlateNumber(resultSet.getString("plate_number"));
-        vehicle.setFirstRegistration(resultSet.getInt("first_registration"));
-        vehicle.setPurchasePrise(resultSet.getInt("purchase_prise"));
-        vehicle.setProducer(resultSet.getString("producer"));
-        vehicle.setMilage(resultSet.getInt("milage"));
-        vehicle.setPreviousIndemnity(resultSet.getInt("previous_indemnity"));
-        vehicle.setCascoWithoutIndemnity(resultSet.getDouble("casco_without_indemnity"));
-        vehicle.setCascoWithIndemnity(resultSet.getDouble("casco_with_indemnity"));
-        return vehicle;
+    private Vehicle createVehicleORM( ResultSet resultSet ){
+        try {
+            Vehicle vehicle = null;
+            vehicle = new Vehicle();
+            vehicle.setId(resultSet.getInt("id"));
+            vehicle.setPlateNumber(resultSet.getString("plate_number"));
+            vehicle.setFirstRegistration(resultSet.getInt("first_registration"));
+            vehicle.setPurchasePrise(resultSet.getInt("purchase_prise"));
+            vehicle.setProducer(resultSet.getString("producer"));
+            vehicle.setMilage(resultSet.getInt("milage"));
+            vehicle.setPreviousIndemnity(resultSet.getInt("previous_indemnity"));
+            vehicle.setCascoWithoutIndemnity(resultSet.getDouble("casco_without_indemnity"));
+            vehicle.setCascoWithIndemnity(resultSet.getDouble("casco_with_indemnity"));
+            return vehicle;
+        } catch (Exception exception){
+            throw new DbAppException("Unable parse from result set", exception);
+        }
     }
 }

@@ -3,11 +3,15 @@ package task1.dao;
 import task1.dto.Vehicle;
 
 public class VehicleHelper {
-    // Test Vehicle1
+    // It is used as id creator. For every random instance it is decreased one.
+    // For distinguishing the test data, i created minus id value.
     static int id = -1;
     static final String[] producers = {"PORSCHE", "BMW", "MERCEDES", "AUDI", "TOYOTA", "VOLVO",
             "SKODA", "VOLKSWAGEN", "FORD", "DACIA", "VAZ"};
 
+    /**
+     * It is creating a random vehicle.
+     * */
     public static Vehicle createRandomVehicle(){
         return new Vehicle(
                 id--, // id
@@ -19,6 +23,10 @@ public class VehicleHelper {
                 randomInterval(0,70000)); // previous_indemnity
     }
 
+    /**
+     * It is creating a random plate number three English uppercase character
+     * with three digit.
+     * */
     static String randomPlateNumber(){
         StringBuilder plateNumber = new StringBuilder();
         for (int i = 0; i < 3; i++) {
@@ -31,6 +39,10 @@ public class VehicleHelper {
         }
         return plateNumber.toString();
     }
+
+    /**
+     * It returns a random value in a given interval
+     * */
 
     static int randomInterval (int min, int max){
         return (int) (Math.random() * (max - min +1) + min);

@@ -1,10 +1,10 @@
 package task1.dao;
 
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import task1.DbAppException;
 import task1.dto.Vehicle;
 import task1.utils.Constants;
 import task1.utils.DB;
@@ -58,7 +58,7 @@ public class VehiclesDaoImplTest {
 
         Vehicle vehicle2 = VehicleHelper.createRandomVehicle();
         vehicle2.setId(vehicle1.getId());
-        Assertions.assertThrows(JdbcSQLIntegrityConstraintViolationException.class,()-> vehiclesDao.insert(vehicle2));
+        Assertions.assertThrows(DbAppException.class,()-> vehiclesDao.insert(vehicle2));
     }
     @Test
     public void Exception_Dublicate_Plate_Number() throws SQLException {
@@ -67,7 +67,7 @@ public class VehiclesDaoImplTest {
 
         Vehicle vehicle2 = VehicleHelper.createRandomVehicle();
         vehicle2.setPlateNumber(vehicle1.getPlateNumber());
-        Assertions.assertThrows(JdbcSQLIntegrityConstraintViolationException.class,()-> vehiclesDao.insert(vehicle2));
+        Assertions.assertThrows(DbAppException.class,()-> vehiclesDao.insert(vehicle2));
     }
 
     @Test

@@ -1,5 +1,9 @@
 package task1.utils;
 
+import task1.DbAppException;
+import task1.FileAppException;
+
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -21,20 +25,21 @@ public class DB {
     private String pass;
 
     /**
-     *   It calculates the purchase prise percentage according given formula!
+     * It calculates the purchase prise percentage according given formula!
      */
-    public DB( String user, String pass) {
+    public DB( String user, String pass ) {
         this.user = user;
         this.pass = pass;
         try {
             Class.forName(JDBC_DRIVER);
-            this.connection = DriverManager.getConnection(DB_URL,user,pass);
+            this.connection = DriverManager.getConnection(DB_URL, user, pass);
             System.out.println("Database connection established...");
-        } catch (ClassNotFoundException | SQLException ex) {
-            System.out.println("Database Connection Creation Failed : " + ex.getMessage());
+        } catch (ClassNotFoundException | SQLException exception) {
+            throw new DbAppException("Unable to connect to the database !", exception);
         }
 
     }
+
     public String getUser() {
         return user;
     }
@@ -55,9 +60,14 @@ public class DB {
      *    Returns the connection object.
      * */
 
-    public Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()){
-            connection = DriverManager.getConnection(DB_URL,this.user,this.pass);
+    public Connection getConnection() {
+
+        try {
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(DB_URL, this.user, this.pass);
+            }
+        } catch (Exception exception) {
+            throw new DbAppException("Unable to get connection from database !", exception);
         }
         return connection;
     }
@@ -67,14 +77,16 @@ public class DB {
      *    Executes it and Returns the connection object.
      * */
 
-    public DB createDatabaseTables(String ddl_file_path) {
-        try( Connection conn = getConnection();
-             Statement stmt = conn.createStatement())
-        {
+    public DB createDatabaseTables( String ddl_file_path ) {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
             String sql = Files.readString(Paths.get(ddl_file_path));
             stmt.executeUpdate(sql);
-        } catch (Exception exception){
-            System.out.println("System Stopped by: " + exception.getMessage());
+        } catch (IOException exception) {
+            throw new FileAppException(String.format("It occured an error while reading %s file!",
+                    Paths.get(ddl_file_path)), exception);
+        } catch (Exception exception) {
+            throw new DbAppException("It occured an error while creating tables!", exception);
         }
         return this;
     }

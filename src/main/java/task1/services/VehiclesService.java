@@ -1,5 +1,6 @@
 package task1.services;
 
+import task1.FileAppException;
 import task1.dao.VehiclesDao;
 import task1.dto.CalculationCriterias;
 import task1.dto.Vehicle;
@@ -9,8 +10,6 @@ import task1.utils.VehicleCSVParser;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 public class VehiclesService {
@@ -71,14 +70,14 @@ public class VehiclesService {
      *   Insert a single vehicle into database
      */
 
-    public boolean insert( Vehicle vehicle ) throws SQLException {
+    public boolean insert( Vehicle vehicle ){
         return vehiclesDao.insert(vehicle);
     }
 
     /**
      *   Updates single vehicle in database
      */
-    public boolean update( Vehicle vehicle ) throws SQLException {
+    public boolean update( Vehicle vehicle ){
         return vehiclesDao.update(vehicle);
     }
 
@@ -100,7 +99,7 @@ public class VehiclesService {
     /**
      *   It loads the vehicles in a given csv file into the memory.
      */
-    public List<Vehicle> loadVehicleFromCsvFile( String csvFileWithPath ) throws IOException {
+    public List<Vehicle> loadVehicleFromCsvFile( String csvFileWithPath ){
         List<Vehicle> vehicles = vehicleCSVParser.parseData(csvFileWithPath);
 
         return vehicles;
@@ -109,7 +108,7 @@ public class VehiclesService {
     /**
      *   It inserts all coming vehicles to the database!.
      */
-    public boolean insertVehicles( List<Vehicle> vehicles ) throws IOException {
+    public boolean insertVehicles( List<Vehicle> vehicles ){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), true))) {
             for (Vehicle vehicle : vehicles) {
                 try {
@@ -118,6 +117,9 @@ public class VehiclesService {
                     writer.append(logHelper.objectExceptionToString(exception, vehicle));
                 }
             }
+        } catch (Exception exception){
+            throw new FileAppException(String.format("It occured and error while reading %s file!",
+                    logHelper.getErrorLogFileWithPath()), exception);
         }
         return true;
     }
@@ -125,7 +127,7 @@ public class VehiclesService {
     /**
      *   Updates all coming vehicles to the database!.
      */
-    public void updateVehicles( List<Vehicle> vehicles ) throws IOException, SQLException {
+    public void updateVehicles( List<Vehicle> vehicles ){
         for (Vehicle vehicle : vehicles) {
             this.update(vehicle);
         }
@@ -134,7 +136,7 @@ public class VehiclesService {
     /**
      *   Calculates the vehicles casco according to given criteria!.
      */
-    public boolean calculateVehiclesCasco( List<Vehicle> vehicles ) throws IOException {
+    public boolean calculateVehiclesCasco( List<Vehicle> vehicles ){
         for (Vehicle vehicle : vehicles) {
             if (cascoCalculator.getCriterias().contains(CalculationCriterias.PreviousIndemnity)) {
                 vehicle.setCascoWithIndemnity(cascoCalculator.getAnnualFee(vehicle));
@@ -148,7 +150,7 @@ public class VehiclesService {
     /**
      *   Saves the vehicles to the given file in csv format.
      */
-    public boolean saveVehiclesToCSVFile( List<Vehicle> vehicles, String fileName ) throws IOException {
+    public boolean saveVehiclesToCSVFile( List<Vehicle> vehicles, String fileName ){
         return vehicleCSVParser.writeToCSV(vehicles, fileName);
     }
 }

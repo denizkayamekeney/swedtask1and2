@@ -1,6 +1,7 @@
 package task1.utils;
 
 import org.apache.commons.csv.CSVPrinter;
+import task1.FileAppException;
 import task1.dto.Vehicle;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -46,13 +47,15 @@ public class VehicleCSVParser {
      *  If a parse error happens, it appends to error log file.
      */
 
-    public List<Vehicle> parseData( String csvFileWithPath ) throws IOException {
-        Reader in = new FileReader(csvFileWithPath);
+    public List<Vehicle> parseData( String csvFileWithPath ){
+
         List<Vehicle> list = new ArrayList<>();
 
-        Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                .withFirstRecordAsHeader().withHeader(VehicleHeaders.class).parse(in);
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), false))) {
+        try (  Reader in = new FileReader(csvFileWithPath);
+               BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), false))) {
+
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader().withHeader(VehicleHeaders.class).parse(in);
             for (CSVRecord record : records) {
                 try {
                     Vehicle vehicle = new Vehicle(
@@ -69,6 +72,9 @@ public class VehicleCSVParser {
                     writer.append(logHelper.objectExceptionToString(exception, record));
                 }
             }
+        } catch (Exception exception){
+            throw new FileAppException(String.format("It occured an error while opening the file!",
+                    logHelper.getErrorLogFileWithPath()), exception);
         }
         return list;
     }
@@ -100,8 +106,9 @@ public class VehicleCSVParser {
                 );
             }
             csvPrinter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            throw new FileAppException(String.format("It occured an error while writing %s file!",
+                    fileName), exception);
         }
         return true;
     }
