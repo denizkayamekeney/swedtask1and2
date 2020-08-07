@@ -1,15 +1,20 @@
 package task.util;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import task1.FileAppException;
 import task1.dto.CoeficientsData;
 import task1.utils.DataParser;
 
 import java.io.IOException;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled
+@SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 public class DataParserTest {
 
     @Test

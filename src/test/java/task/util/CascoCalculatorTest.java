@@ -1,6 +1,10 @@
 package task.util;
 
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import task1.App;
 import task1.dao.VehicleHelper;
 import task1.dto.CalculationCriterias;
 import task1.dto.CoeficientsData;
@@ -10,17 +14,12 @@ import task1.utils.*;
 import java.io.IOException;
 import java.util.Set;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest(classes = App.class)
+@TestPropertySource("classpath:application-test.properties")
 public class CascoCalculatorTest {
 
+    @Autowired
     CascoCalculator cascoCalculator;
-
-    @BeforeAll
-    public void initDataBase() throws IOException {
-        cascoCalculator = new CascoCalculator(
-                DataParser.loadDataFile("src/test/resources/withFullNodes.json")
-        );
-    }
 
     @BeforeEach
     public void emptyCriterias() {

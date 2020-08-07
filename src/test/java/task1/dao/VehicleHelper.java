@@ -3,9 +3,6 @@ package task1.dao;
 import task1.dto.Vehicle;
 
 public class VehicleHelper {
-    // It is used as id creator. For every random instance it is decreased one.
-    // For distinguishing the test data, i created minus id value.
-    static int id = -1;
     static final String[] producers = {"PORSCHE", "BMW", "MERCEDES", "AUDI", "TOYOTA", "VOLVO",
             "SKODA", "VOLKSWAGEN", "FORD", "DACIA", "VAZ"};
 
@@ -14,7 +11,6 @@ public class VehicleHelper {
      * */
     public static Vehicle createRandomVehicle(){
         return new Vehicle(
-                id--, // id
                 randomPlateNumber(), //plate_number
                 randomInterval(1990,2020), //
                 randomInterval(5000,30000),//PURCHASE_PRISE,

@@ -1,6 +1,8 @@
 package task1.utils;
 
 import org.apache.commons.csv.CSVPrinter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import task1.FileAppException;
 import task1.dto.Vehicle;
 import org.apache.commons.csv.CSVFormat;
@@ -12,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class VehicleCSVParser {
     // The headers for the parsing original Vehicle.json file.
     public enum VehicleHeaders {
@@ -30,6 +33,7 @@ public class VehicleCSVParser {
 
     LogHelper logHelper;
 
+    @Autowired
     public VehicleCSVParser( LogHelper logHelper ) {
         this.logHelper = logHelper;
     }
@@ -59,7 +63,6 @@ public class VehicleCSVParser {
             for (CSVRecord record : records) {
                 try {
                     Vehicle vehicle = new Vehicle(
-                            Integer.parseInt(record.get(VehicleHeaders.id)), // id
                             record.get(VehicleHeaders.plate_number),  // plate_number
                             Integer.parseInt(record.get(VehicleHeaders.first_registration)),  // first_registration
                             Double.parseDouble(record.get(VehicleHeaders.purchase_prise)),  // first_registration

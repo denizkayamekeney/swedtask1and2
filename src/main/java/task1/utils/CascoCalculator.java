@@ -1,11 +1,14 @@
 package task1.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import task1.dto.CalculationCriterias;
 import task1.dto.CoeficientsData;
 import task1.dto.Vehicle;
 
 import java.util.*;
 
+@Component
 public class CascoCalculator {
 
     // It hold the data JSON as an object for taking calculation parameters.
@@ -15,6 +18,7 @@ public class CascoCalculator {
     private HashSet<CalculationCriterias>
             criterias = new HashSet<>();
 
+    @Autowired
     public CascoCalculator( CoeficientsData cooefficientData ) {
         this.cooefficientData = cooefficientData;
     }

@@ -20,7 +20,7 @@ public class DataParser {
             DataItem dataItem = objectMapper.readValue(new File(fileWithPath), DataItem.class);
             data = dataItem.getData();
         } catch (Exception exception){
-            throw new FileAppException(String.format("It occured and error while reading and loading %s coefficient file!",
+            throw new FileAppException(String.format("It occured and error while reading and loading %s file!",
                     fileWithPath), exception);
         }
         return data;

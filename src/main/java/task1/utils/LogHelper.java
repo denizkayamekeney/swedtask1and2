@@ -1,10 +1,16 @@
 package task1.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 final public class LogHelper{
 
     String errorLogFileWithPath;
 
-    public LogHelper( String errorLogFileWithPath ) {
+    @Autowired
+    public LogHelper( @Value("${csvErrorFile}") String errorLogFileWithPath ) {
         this.errorLogFileWithPath = errorLogFileWithPath;
     }
 

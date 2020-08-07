@@ -3,6 +3,10 @@ package task.util;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import task1.App;
 import task1.dao.VehicleHelper;
 import task1.dto.Vehicle;
 import task1.utils.Constants;
@@ -17,17 +21,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@SpringBootTest(classes = App.class)
+@TestPropertySource("classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class VehicleCSVParserTest {
+    @Autowired
     LogHelper logHelper;
+    @Autowired
     VehicleCSVParser vehicleCSVParser;
+
     final String inputFileName = "testinput.dat";
 
     Path inputFilePath;
     Path errorFilePath;
 
     @BeforeEach
-    public void deleteTestFile(){
+    synchronized public void deleteTestFile(){
         try {
             Files.deleteIfExists(inputFilePath);
             Files.deleteIfExists(errorFilePath);
@@ -126,7 +135,6 @@ public class VehicleCSVParserTest {
                 .withFirstRecordAsHeader().withHeader(VehicleCSVParser.VehicleTestHeaders.class).parse(in);
         for (CSVRecord record : records) {
             Vehicle vehicle = new Vehicle(
-                    Integer.parseInt(record.get(VehicleCSVParser.VehicleTestHeaders.id)), // id
                     record.get(VehicleCSVParser.VehicleTestHeaders.plate_number),  // plate_number
                     Integer.parseInt(record.get(VehicleCSVParser.VehicleTestHeaders.first_registration)),  // first_registration
                     Double.parseDouble(record.get(VehicleCSVParser.VehicleTestHeaders.purchase_prise)),  // first_registration

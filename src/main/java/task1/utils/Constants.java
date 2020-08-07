@@ -14,7 +14,7 @@ public interface Constants {
   String ERROR_FILE_PATH_TEST = "csvErrorsTest.dat";
 
   // It is DDL file for creating the Vehicles table
-  String DDL_FILE_PATH = "src/main/resources/database.sql";
+  String DDL_FILE_PATH = "src/main/resources/data.sql";
 
   // Database credentials
   String USER = "sa";

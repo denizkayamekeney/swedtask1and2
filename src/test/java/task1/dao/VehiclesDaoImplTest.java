@@ -1,84 +1,71 @@
 package task1.dao;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import com.sun.xml.bind.v2.TODO;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.TestPropertySource;
 import task1.DbAppException;
 import task1.dto.Vehicle;
-import task1.utils.Constants;
-import task1.utils.DB;
-import java.sql.SQLException;
+import task1.utils.DataLoader;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+import java.sql.SQLException;
+import java.util.List;
+
+@SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 public class VehiclesDaoImplTest {
 
+    @Autowired
     private VehiclesDao vehiclesDao;
-    private DB db;
-
-    @BeforeAll
-    public void initDataBase() throws SQLException {
-        this.db = new DB(Constants.USER,
-                Constants.PASS)
-                .createDatabaseTables(Constants.DDL_FILE_PATH);
-
-        vehiclesDao = new VehiclesDaoImpl(db.getConnection());
-    }
 
     @Test
-    public void succesfully_Insert_Vehicle() throws SQLException {
-        Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
-        vehiclesDao.insert(vehicle1);
-        var vehicle2 = vehiclesDao.findById(vehicle1.getId());
+    public void succesfully_Insert_Vehicle(){
+        Vehicle vehicle1 = vehiclesDao.save(VehicleHelper.createRandomVehicle());
+        Vehicle vehicle2 = vehiclesDao.findById(vehicle1.getId()).orElse(null);
         Assertions.assertEquals(vehicle1,vehicle2,"The object needs to be equal");
     }
 
     @Test
-    public void succesfully_Update_Vehicle() throws SQLException {
+    public void succesfully_Update_Vehicle(){
         Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
-        vehiclesDao.insert(vehicle1);
         vehicle1.setCascoWithIndemnity(300);
-        vehiclesDao.update(vehicle1);
-        var vehicle2 = vehiclesDao.findById(vehicle1.getId());
+        vehicle1 = vehiclesDao.save(vehicle1);
+        var vehicle2 = vehiclesDao.findById(vehicle1.getId()).orElse(null);
         Assertions.assertEquals(vehicle1,vehicle2,"The object needs to be equal");
     }
 
     @Test
-    public void findById_Vehicle() throws SQLException {
-        Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
-        vehiclesDao.insert(vehicle1);
-        var vehicle2 = vehiclesDao.findById(vehicle1.getId());
-        Assertions.assertEquals(vehicle1,vehicle2,"It could not fint the inserted data");
+    public void findById_Vehicle(){
+        Vehicle vehicle1 = vehiclesDao.save(VehicleHelper.createRandomVehicle());
+        var vehicle2 = vehiclesDao.findById(vehicle1.getId()).orElse(null);
+        Assertions.assertEquals(vehicle1,vehicle2,"It could not find the inserted data");
     }
 
     @Test
-    public void Exception_Dublicate_id() throws SQLException {
-        Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
-        vehiclesDao.insert(vehicle1);
-
-        Vehicle vehicle2 = VehicleHelper.createRandomVehicle();
-        vehicle2.setId(vehicle1.getId());
-        Assertions.assertThrows(DbAppException.class,()-> vehiclesDao.insert(vehicle2));
-    }
-    @Test
-    public void Exception_Dublicate_Plate_Number() throws SQLException {
-        Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
-        vehiclesDao.insert(vehicle1);
+    public void Exception_Dublicate_Plate_Number(){
+        Vehicle vehicle1 = vehiclesDao.save(VehicleHelper.createRandomVehicle());
 
         Vehicle vehicle2 = VehicleHelper.createRandomVehicle();
         vehicle2.setPlateNumber(vehicle1.getPlateNumber());
-        Assertions.assertThrows(DbAppException.class,()-> vehiclesDao.insert(vehicle2));
+
+        Assertions.assertThrows(DataIntegrityViolationException.class, ()->vehiclesDao.save(vehicle2));
+
     }
 
     @Test
     public void findAll_Vehicle_test() throws SQLException {
         final int recordCount = 10;
-        int initialRecordSize = vehiclesDao.findAll().size();
+        int initialRecordSize = ((List<Vehicle>)vehiclesDao.findAll()).size();
+
         for (int i = 0; i < recordCount; i++){
-            vehiclesDao.insert(VehicleHelper.createRandomVehicle());
+            vehiclesDao.save(VehicleHelper.createRandomVehicle());
         }
-        var vehicless = vehiclesDao.findAll();
-        Assertions.assertTrue(vehiclesDao.findAll().size() == initialRecordSize + recordCount,"It is ecpected to insert " + recordCount + " record");
+        int finalRecordSize = ((List<Vehicle>)vehiclesDao.findAll()).size();
+                Assertions.assertTrue(finalRecordSize == initialRecordSize + recordCount,"It is ecpected to insert " + recordCount + " record");
     }
 
 }

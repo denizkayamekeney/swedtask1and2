@@ -1,9 +1,9 @@
 package task1.services;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import task1.dao.VehicleHelper;
 import task1.dao.VehiclesDao;
 import task1.dao.VehiclesDaoImpl;
@@ -18,42 +18,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@TestPropertySource("classpath:application-test.properties")
 public class VehicleServiceTest {
-    private VehiclesDao vehiclesDao;
-    private VehicleCSVParser vehicleCSVParser;
-    private LogHelper logHelper;
-    private CascoCalculator cascoCalculator;
-
+    @Autowired
     private VehiclesService vehiclesService;
 
-    @BeforeAll
-    public void initDataBase() throws SQLException, IOException {
-        DB db = new DB(Constants.USER,
-                Constants.PASS)
-                .createDatabaseTables(Constants.DDL_FILE_PATH);
-
-        vehiclesDao = new VehiclesDaoImpl(db.getConnection());
-
-        logHelper = new LogHelper(Constants.ERROR_FILE_PATH_TEST);
-        vehicleCSVParser = new VehicleCSVParser(logHelper);
-        CoeficientsData coeficientsData = DataParser.loadDataFile("src/test/resources/withFullNodes.json");
-
-
-        cascoCalculator = new CascoCalculator(coeficientsData);
-        cascoCalculator.addCriterias(CalculationCriterias.Make,
-                CalculationCriterias.VehicleAge,
-                CalculationCriterias.VehicleValue);
-        vehiclesService = new VehiclesService(vehiclesDao,
-                vehicleCSVParser,
-                logHelper,
-                cascoCalculator);
-    }
-
     @Test
-    public void calculateVehiclesCasco_without_indemnity_Test() throws IOException {
+    public void calculateVehiclesCasco_without_indemnity_Test(){
         Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
         vehicle1.setPreviousIndemnity(1000);
+
+        // We dont put CalculationCriterias.PreviousIndemnity in calculations.
+        vehiclesService.getCascoCalculator().setCriterias(new HashSet<>(Set.of(CalculationCriterias.Make,
+                CalculationCriterias.VehicleAge,
+                CalculationCriterias.VehicleValue)));
 
         List<Vehicle> vehicles = List.of(vehicle1);
         vehiclesService.calculateVehiclesCasco(vehicles);
@@ -63,7 +42,7 @@ public class VehicleServiceTest {
     }
 
     @Test
-    public void calculateAnnualVehiclesCasco_with_indemnity_Test() throws IOException {
+    public void calculateAnnualVehiclesCasco_with_indemnity_Test() {
         Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
         vehicle1.setPreviousIndemnity(1000);
 
@@ -80,7 +59,7 @@ public class VehicleServiceTest {
     }
 
     @Test
-    public void calculateAnnualVehiclesCasco_with_Skip_Test() throws IOException {
+    public void calculateAnnualVehiclesCasco_with_Skip_Test(){
         Vehicle vehicle1 = VehicleHelper.createRandomVehicle();
         vehicle1.setProducer("TATRA"); // TATRA is not in avg_purchase_list.
         vehicle1.setPreviousIndemnity(1000);

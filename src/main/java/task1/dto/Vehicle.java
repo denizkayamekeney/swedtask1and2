@@ -1,107 +1,62 @@
 package task1.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Objects;
 
+@Entity(name="vehicles")
+@Getter
+@Setter
 public class Vehicle {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private String plate_number;
-    private int first_registration;
-    private double purchase_prise;
+    @Column(name="plate_number", length=10, nullable=false, unique = true)
+    private String plateNumber;
+
+    @Column(name="firstRegistration", nullable=false)
+    private int firstRegistration;
+
+    @Column(name="purchase_prise", nullable=false)
+    private double purchasePrise;
+
+    @Column(name="producer")
     private String producer;
+
+    @Column(name="milage")
     private int milage;
-    private double previous_indemnity;
 
-    private double casco_without_indemnity;
-    private double casco_with_indemnity;
+    @Column(name="previous_indemnity")
+    private double previousIndemnity;
 
-    public double getCascoWithoutIndemnity() {
-        return casco_without_indemnity;
+    @Column(name="casco_without_indemnity")
+    private double cascoWithoutIndemnity;
+
+    @Column(name="casco_with_indemnity")
+    private double cascoWithIndemnity;
+
+    public void setPlateNumber(String plateNumber){
+        this.plateNumber = plateNumber;
     }
 
-    public void setCascoWithoutIndemnity( double casco_without_indemnity ) {
-        this.casco_without_indemnity = casco_without_indemnity;
-    }
-
-    public double getCascoWithIndemnity() {
-        return casco_with_indemnity;
-    }
-
-    public void setCascoWithIndemnity( double casco_with_indemnity ) {
-        this.casco_with_indemnity = casco_with_indemnity;
-    }
-
-
-    public Vehicle( int id, String plate_number, int first_registration, double purchase_prise, String producer, int milage, double previous_indemnity ) {
-        this.id = id;
-        this.plate_number = plate_number;
-        this.first_registration = first_registration;
-        this.purchase_prise = purchase_prise;
+    public Vehicle( String plateNumber, int firstRegistration, double purchasePrise, String producer, int milage, double previousIndemnity ) {
+        this.plateNumber = plateNumber.toUpperCase();
+        this.firstRegistration = firstRegistration;
+        this.purchasePrise = purchasePrise;
         this.producer = producer;
         this.milage = milage;
-        this.previous_indemnity = previous_indemnity;
+        this.previousIndemnity = previousIndemnity;
     }
 
 
     public Vehicle() {
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId( int id ) {
-        this.id = id;
-    }
-
-    public String getPlateNumber() {
-        return plate_number;
-    }
-
-    public void setPlateNumber( String plate_number ) {
-        this.plate_number = plate_number;
-    }
-
-    public int getFirstRegistration() {
-        return first_registration;
-    }
-
-    public void setFirstRegistration( int first_registration ) {
-        this.first_registration = first_registration;
-    }
-
-    public double getPurchasePrise() {
-        return purchase_prise;
-    }
-
-    public void setPurchasePrise( double purchase_prise ) {
-        this.purchase_prise = purchase_prise;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public void setProducer( String producer ) {
-        this.producer = producer;
-    }
-
-    public int getMilage() {
-        return milage;
-    }
-
-    public void setMilage( int milage ) {
-        this.milage = milage;
-    }
-
-    public double getPreviousIndemnity() {
-        return previous_indemnity;
-    }
-
-    public void setPreviousIndemnity( double previous_indemnity ) {
-        this.previous_indemnity = previous_indemnity;
-    }
 
     public int getAge(){
         return Calendar.getInstance().get(Calendar.YEAR) - getFirstRegistration();
