@@ -1,0 +1,153 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"></link>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/vehicles.css}"/>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="page-title">
+        <h2>
+            <span class="fa fa-arrow-circle-o-left"></span> Vehicles!
+        </h2>
+        <a th:href="@{/vehicles/add/}"
+           class="btn btn-primary vehicle-add-button">
+            Add Vehicle
+        </a>
+    </div>
+    <input type="hidden" id="sortDir" th:value="${sortDir}"/>
+    <input type="hidden" id="sortField" th:value="${sortField}"/>
+
+    <div class="row pagination-margins">
+        <table class="table table-bordered table-striped">
+            <thead thead-dark>
+            <tr>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=id&sortDir=' + ${reverseSortDir}}">
+                        Id
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=plateNumber&sortDir=' + ${reverseSortDir}}">
+                        Plate Number
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=firstRegistration&sortDir=' + ${reverseSortDir}}">
+                        First Registration
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=purchasePrise&sortDir=' + ${reverseSortDir}}">
+                        Purchase Prise
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=producer&sortDir=' + ${reverseSortDir}}">
+                        Producer
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=milage&sortDir=' + ${reverseSortDir}}">
+                        Milage
+                    </a>
+                </th>
+                <th>
+                    <a th:href="@{'/vehicles/findall/?pageSize=' + ${selectedPageSize} + '&page=1&sortField=previousIndemnity&sortDir=' + ${reverseSortDir}}">
+                        Previous Indemnity
+                    </a>
+                </th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vehicle : ${vehicles}">
+                <td th:text="${vehicle.id}">Text ...</td>
+                <td th:text="${vehicle.plateNumber}">Text ...</td>
+                <td th:text="${vehicle.firstRegistration}">Text ...</td>
+                <td th:text="${vehicle.purchasePrise}">Text ...</td>
+                <td th:text="${vehicle.producer}">Text ...</td>
+                <td th:text="${vehicle.milage}">Text ...</td>
+                <td th:text="${vehicle.previousIndemnity}">Text ...</td>
+                <td>
+                    <a th:href="@{/vehicles/updateForm/(id=${vehicle.id})}">
+                        <i class="glyphicon glyphicon-edit vehicle-icon-class"></i>
+                    </a>
+                    <a th:href="@{/vehicles/delete/(id=${vehicle.id})}">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="form-group col-md-1">
+                <select class="form-control pagination" id="pageSizeSelect">
+                    <option th:each="pageSize : ${pageSizes}" th:text="${pageSize}"
+                            th:value="${pageSize}"
+                            th:selected="${pageSize} == ${selectedPageSize}"></option>
+                </select>
+            </div>
+
+
+            <div th:if="${vehicles.totalPages != 1}"
+                 class="form-group col-md-11 pagination-left-aligned">
+                <ul class="pagination">
+                    <li th:class="${vehicles.number == 0} ? disabled"><a
+                            class="pageLink"
+                            th:href="@{/vehicles/findall/(pageSize=${selectedPageSize}, page=1, sortField=${sortField}, sortDir=${sortDir})}">«</a>
+<!--                        &sortField=milage&sortDir=' + ${reverseSortDir}-->
+                    </li>
+                    <li th:class="${vehicles.number == 0} ? disabled"><a
+                            class="pageLink"
+                            th:href="@{/vehicles/findall/(pageSize=${selectedPageSize}, page=${vehicles.number}, sortField=${sortField}, sortDir=${sortDir})}">←</a>
+                    </li>
+                    <li
+                            th:class="${vehicles.number == (page - 1)} ? 'active pointer-disabled'"
+                            th:each="page : ${#numbers.sequence(pager.startPage, pager.endPage)}">
+                        <a class="pageLink"
+                           th:href="@{/vehicles/findall/(pageSize=${selectedPageSize}, page=${page}, sortField=${sortField}, sortDir=${sortDir})}"
+                           th:text="${page}"></a>
+                    </li>
+                    <li
+                            th:class="${vehicles.number + 1 == vehicles.totalPages} ? disabled">
+                        <a class="pageLink"
+                           th:href="@{/vehicles/findall/(pageSize=${selectedPageSize}, page=${vehicles.number + 2}, sortField=${sortField}, sortDir=${sortDir})}">→</a>
+                    </li>
+                    <li
+                            th:class="${vehicles.number + 1 == vehicles.totalPages} ? disabled">
+                        <a class="pageLink"
+                           th:href="@{/vehicles/findall/(pageSize=${selectedPageSize}, page=${vehicles.totalPages}, sortField=${sortField}, sortDir=${sortDir})}">»</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script
+        src="https://code.jquery.com/jquery-1.11.1.min.js"
+        integrity="sha256-VAvG3sHdS5LqTT+5A/aeq/bZGa/Uj04xKxY8KM/w9EE="
+        crossorigin="anonymous"></script>
+<script
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+        $(document).ready(function() {
+    changePageAndSize();
+});
+function changePageAndSize() {
+    $('#pageSizeSelect').change(function(evt) {
+        window.location.replace("/vehicles/findall/?pageSize=" + this.value + "&page=1&sortField="
+            + $('#sortField').val()+"&sortDir=" + $('#sortDir').val());
+    });
+}
+</script>
+</body>
+</html>

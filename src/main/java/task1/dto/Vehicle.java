@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -16,21 +17,32 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @NotNull
+    @Size(max=10)
     @Column(name="plate_number", length=10, nullable=false, unique = true)
     private String plateNumber;
 
+    @NotNull
+    @Max(2020)
+    @Min(1980)
     @Column(name="firstRegistration", nullable=false)
     private int firstRegistration;
 
+    @Max(200000)
+    @Min(100)
     @Column(name="purchase_prise", nullable=false)
     private double purchasePrise;
 
     @Column(name="producer")
     private String producer;
 
+    @Max(1000000)
+    @Min(0)
     @Column(name="milage")
     private int milage;
 
+    @Max(100000)
+    @Min(0)
     @Column(name="previous_indemnity")
     private double previousIndemnity;
 

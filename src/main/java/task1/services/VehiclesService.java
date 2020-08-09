@@ -1,6 +1,7 @@
 package task1.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import task1.FileAppException;
 import task1.dao.VehiclesDao;
@@ -10,6 +11,7 @@ import task1.utils.CascoCalculator;
 import task1.utils.LogHelper;
 import task1.utils.VehicleCSVParser;
 
+import org.springframework.data.domain.Pageable;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.List;
@@ -79,10 +81,25 @@ public class VehiclesService {
     }
 
     /**
+     * Delete a single vehicle into database
+     */
+
+    public void deleteById( int id) {
+        vehiclesDao.deleteById(id);
+    }
+
+    /**
      * Returns all data in the table
      */
     public List<Vehicle> findAll() {
         return (List<Vehicle>) vehiclesDao.findAll();
+    }
+
+    /**
+     * Returns all data in the table
+     */
+    public Page<Vehicle> findAll( Pageable pageable) {
+        return vehiclesDao.findAll(pageable);
     }
 
     /**
@@ -108,6 +125,9 @@ public class VehiclesService {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(logHelper.getErrorLogFileWithPath(), true))) {
             for (Vehicle vehicle : vehicles) {
                 try {
+                    if (vehicle.getPlateNumber().equals("571WKP")){
+                        System.out.println("I am here");
+                    }
                     vehiclesDao.save(vehicle);
                 } catch (Exception exception) {
                     writer.append(logHelper.objectExceptionToString(exception, vehicle));

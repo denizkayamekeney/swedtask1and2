@@ -33,6 +33,7 @@ final public class LogHelper{
                 .append("-".repeat(60))
                 .append("\n")
                 .toString();
+        //TODO : It needs to make detail of error.
     }
 
 }
