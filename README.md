@@ -1,7 +1,7 @@
 # swedtask1and2
 In this version of application I have created three controller.
 
-Example Screens are in ReadMeScreens.doc.
+Please see also Example Screens are in : ReadMeScreens.doc.
 
 Projects highligths: 
 - Spring boot application created. 
@@ -20,10 +20,13 @@ Projects highligths:
 - For coefficient, I have created two entity which can hold every possible coefficient
   in any primitive wrapper type.
 - Default port of the tomcat (8080 is using)
+- Very basic exceptions is created and possible exceptions are wrapped by that. Written in AppException,
+DbAppException, FileException. 
  
 
 Execution Flow :
- - Run the Assignment-1.1-SNAPSHOT.jar file which is also includes embedded tomcat. 
+ - Run the Assignment-1.1-SNAPSHOT.jar file which is also includes embedded tomcat under /executables directory.
+ Everyhing is included in this jar file for running the system. 
  - When the jar runs ot is reading vehicle csv and data.json file 
    specified in application.properties file.
  - When an error occurs during parsing it is written to 
@@ -41,4 +44,4 @@ Execution Flow :
   I especially did not do something. Normally I should have used exception for minus values.
   
   -  There need to add some extra test cases for robustness.
-  
+
