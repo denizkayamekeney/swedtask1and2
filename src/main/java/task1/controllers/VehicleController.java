@@ -29,7 +29,7 @@ public class VehicleController {
     @Autowired
     VehiclesService vehiclesService;
 
-    @GetMapping("/vehicles/findall")
+    @GetMapping(value = {"/","/index","/vehicles/findall"})
     public ModelAndView findAll(@RequestParam("pageSize") Optional<Integer> pageSize,
                                 @RequestParam("page") Optional<Integer> page,
                                 @RequestParam("sortField") Optional<String> sortField,

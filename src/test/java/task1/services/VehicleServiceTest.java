@@ -5,15 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import task1.dao.VehicleHelper;
-import task1.dao.VehiclesDao;
-import task1.dao.VehiclesDaoImpl;
 import task1.dto.CalculationCriterias;
-import task1.dto.CoeficientsData;
 import task1.dto.Vehicle;
-import task1.utils.*;
-
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -4,15 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import task1.dto.Coefficient;
-import task1.dto.CoefficientGroup;
 import task1.services.CoefficientService;
 import task1.services.CoefficientsGroupService;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -33,9 +30,7 @@ public class CoefficientController {
     @GetMapping("/coefficients/updateForm")
     public String showFormForUpdate(@RequestParam("id") int id,
                                     Model model) {
-//        Coefficient coefficient = coefficientService.findById(id).orElse(null);
         model.addAttribute("coefficient", coefficientService.findById(id).orElse(null));
-//        List<CoefficientGroup> coefficientGroups = coefficientsGroupService.findAll();
         model.addAttribute("groups", coefficientsGroupService.findAll());
         return "coefficients/coefficient-form";
     }

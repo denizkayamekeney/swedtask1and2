@@ -2,9 +2,7 @@ package task1.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import task1.dao.CoefficientDao;
 import task1.dao.CoefficientGroupDao;
-import task1.dto.Coefficient;
 import task1.dto.CoefficientGroup;
 
 import java.util.List;
@@ -15,9 +13,6 @@ public class CoefficientsGroupService {
 
     @Autowired
     CoefficientGroupDao coefficientGroupDao;
-
-//    @Autowired
-//    CoefficientDao coefficientDao;
 
     /**
      * Insert a single coefficientGroup into database

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import task1.dto.CoefficientGroup;
-import task1.services.CoefficientService;
 import task1.services.CoefficientsGroupService;
 
 import javax.validation.Valid;
