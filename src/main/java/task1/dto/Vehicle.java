@@ -18,7 +18,7 @@ public class Vehicle {
     private int id;
 
     @NotNull
-    @Size(max=10)
+    @Size(min = 3, max=10)
     @Column(name="plate_number", length=10, nullable=false, unique = true)
     private String plateNumber;
 

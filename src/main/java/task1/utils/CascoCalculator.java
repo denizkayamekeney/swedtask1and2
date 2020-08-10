@@ -2,6 +2,7 @@ package task1.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.StringUtils;
 import task1.dto.CalculationCriterias;
 import task1.dto.CoeficientsData;
 import task1.dto.Vehicle;
@@ -102,5 +103,38 @@ public class CascoCalculator {
         return sumRiskValues *= makeRisk;
     }
 
+    public Map<String,String> getCoefficientsForDiplay() {
+        Map<String,String> displayCoeffients = new LinkedHashMap<>();
+        displayCoeffients.put("make","Make Coefficient");
+        for (Map.Entry<String, Double> entry : cooefficientData.getCoefficients().entrySet()) {
+            displayCoeffients.put(entry.getKey(),
+                    StringUtils.capitalizeWords(entry.getKey().replace('_',' ')));
+        }
+        return displayCoeffients;
+    }
+
+    public LinkedHashSet<CalculationCriterias> getCriteriasFromHashKeys(LinkedHashSet<String> keys) {
+        LinkedHashSet<CalculationCriterias> criterias = new LinkedHashSet<>();
+        for (String key : keys) {
+            switch (key) {
+                case "make":
+                    criterias.add(CalculationCriterias.Make);
+                    break;
+                case "vehicle_age":
+                    criterias.add(CalculationCriterias.VehicleAge);
+                    break;
+                case "vehicle_value":
+                    criterias.add(CalculationCriterias.VehicleValue);
+                    break;
+                case "previous_indemnity":
+                    criterias.add(CalculationCriterias.PreviousIndemnity);
+                    break;
+                default:
+                    criterias.add(CalculationCriterias.NonSpecific);
+                    break;
+            }
+        }
+        return criterias;
+    }
 
 }

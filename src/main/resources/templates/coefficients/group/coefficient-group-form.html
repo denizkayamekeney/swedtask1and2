@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/vehicle-add.css}"/>
+
+    <title>Save Coefficient Group</title>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h3>Coefficient Group Directory</h3>
+    <hr>
+
+    <p class="h4 mb-4">Save Coefficient Group</p>
+
+    <form action="#" th:action="@{/coefficients/group/save/}"
+          th:object="${group}" method="POST">
+        <input type="hidden" th:field="*{id}" />
+
+        <p>Name</p>
+        <input type="text" th:field="*{name}"
+               class="form-control mb-4 col-2" placeholder="name" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+
+        <p>Display Name</p>
+        <input type="text" th:field="*{displayName}"
+               class="form-control mb-4 col-2" placeholder="Display Name" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('displayName')}" th:errors="*{displayName}"></span>
+
+        <p>Data Type</p>
+        <input type="text" th:field="*{dataType}"
+               class="form-control mb-4 col-2" placeholder="Data Type" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('dataType')}" th:errors="*{dataType}"></span>
+
+        <br>
+        <button type="submit" class="btn btn btn-primary btn-condensed col-2">Save</button>
+    </form>
+
+    <hr>
+    <a th:href="@{/coefficients/group/findall}">Back to Coefficients List</a>
+
+</div>
+</body>
+
+</html>

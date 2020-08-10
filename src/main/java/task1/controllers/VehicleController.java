@@ -15,6 +15,7 @@ import task1.dto.Vehicle;
 import task1.services.VehiclesService;
 
 import javax.validation.Valid;
+import java.util.LinkedHashSet;
 import java.util.Optional;
 
 @Controller
@@ -35,7 +36,7 @@ public class VehicleController {
                                 @RequestParam("sortDir") Optional<String> sortDir
                                 ){
 
-        ModelAndView modelAndView = new ModelAndView("index");
+        ModelAndView modelAndView = new ModelAndView("vehicle/index");
 
         int evalPageSize = pageSize.orElse(INITIAL_PAGE_SIZE);
         int evalPage = (page.orElse(0) < 1) ? INITIAL_PAGE : page.get() - 1;
@@ -66,18 +67,51 @@ public class VehicleController {
                                     Model model) {
         Vehicle vehicle = vehiclesService.findById(id).orElse(null);
         model.addAttribute("vehicle", vehicle);
-        return "vehicle-form";
+        return "vehicle/vehicle-form";
     }
+
+    @GetMapping("/vehicles/casco/")
+    public String calculateCasco(@RequestParam("id") int id,
+                                    Model model) {
+        Vehicle vehicle = vehiclesService.findById(id).orElse(null);
+        var coefficientsForDiplay = vehiclesService.getCascoCalculator().getCoefficientsForDiplay();
+        model.addAttribute("vehicle", vehicle);
+        model.addAttribute("coefficients", coefficientsForDiplay);
+        return "vehicle/vehicle-casco-form";
+    }
+
+    @PostMapping("/vehicles/casco/ajax/")
+    public String calculateCascotable( @RequestParam("id") int id,
+                                       @RequestParam(value="duration", required=false) Optional<Integer> duration,
+                                       @RequestParam(value="coefficients", required=false) LinkedHashSet<String> coefficients,
+                                       Model model) {
+        Vehicle vehicle = vehiclesService.findById(id).orElse(null);
+        Integer durationEval =  duration.orElse(1);
+        if (vehicle != null && coefficients != null && coefficients.size() >0){
+            vehiclesService.getCascoCalculator()
+                    .setCriterias(vehiclesService.getCascoCalculator().getCriteriasFromHashKeys(coefficients));
+
+            var result = vehiclesService.getCascoCalculator().getAnnualFee(vehicle);
+            model.addAttribute("result", result);
+            model.addAttribute("criterias", vehiclesService.getCascoCalculator().getCriterias());
+            model.addAttribute("duration", durationEval);
+        }
+        var coefficientsForDiplay = vehiclesService.getCascoCalculator().getCoefficientsForDiplay();
+        model.addAttribute("vehicle", vehicle);
+        model.addAttribute("coefficients", coefficientsForDiplay);
+        return "vehicle/vehicle-casco-table";
+    }
+
     @GetMapping("/vehicles/add/")
     public String showFormForAdd(Model model) {
         Vehicle vehicle = new Vehicle();
         model.addAttribute("vehicle", vehicle);
-        return "vehicle-form";
+        return "vehicle/vehicle-form";
     }
     @PostMapping ("/vehicles/save/")
     public String saveVehicle( @Valid @ModelAttribute("vehicle") Vehicle vehicle, BindingResult bindingResult) {
         if (bindingResult.hasErrors()){
-            return "vehicle-form";
+            return "vehicle/vehicle-form";
         }
         vehiclesService.save(vehicle);
         return "redirect:/vehicles/findall/";

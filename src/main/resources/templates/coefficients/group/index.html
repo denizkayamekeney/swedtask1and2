@@ -1,0 +1,74 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"></link>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/vehicles.css}"/>
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script
+            src="https://code.jquery.com/jquery-1.11.1.min.js"
+            integrity="sha256-VAvG3sHdS5LqTT+5A/aeq/bZGa/Uj04xKxY8KM/w9EE="
+            crossorigin="anonymous">
+    </script>
+    <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous">
+    </script>
+
+</head>
+<body>
+<div class="container-fluid">
+    <div class="page-title">
+        <h2>
+            <span class="fa fa-arrow-circle-o-left"></span> Coefficient Groups!
+        </h2>
+        <a th:href="@{/coefficients/group/add/}"
+           class="btn btn-primary vehicle-add-button">
+            Add Group
+        </a>
+    </div>
+
+    <div class="row pagination-margins">
+        <table class="table table-bordered table-striped">
+            <thead thead-dark>
+            <tr>
+                <th>Group Id</th>
+                <th>Name</th>
+                <th>Display Name</th>
+                <th>Data Type</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="group : ${groups}">
+                <td th:text="${group.id}">Text ...</td>
+                <td th:text="${group.name}">Text ...</td>
+                <td th:text="${group.displayName}">Text ...</td>
+                <td th:text="${group.dataType}">Text ...</td>
+                <td>
+                    <a th:href="@{/coefficients/group/updateForm/(id=${group.id})}" title="Edit Group">
+                        <i class="fas fa-edit fa-lg"></i>
+                    </a>
+
+                    <a th:href="@{/coefficients/findbygroup/(id=${group.id})}" title="Look Coefficients">
+                        <i class="fas fa-search fa-lg"></i>
+                    </a>
+                    <a th:href="@{/coefficients/group/delete/(id=${group.id})}" title="Delete Group">
+                        <i class="fas fa-trash fa-lg"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <a th:href="@{/vehicles/findall}">Goto Vehicle List</a>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+ "data": {
+    "coefficients": {
+       "vehicle_age": 1.1MM,
+     },
+    "make_coefficients": {
+       "volvo": 0.95,
+       "tatra": 0.85,
+     },
+   "avg_purchase_price": {
+       "PORSCHE": 49687,
+   }
+}
+}

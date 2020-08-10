@@ -6,14 +6,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import task1.App;
 import task1.FileAppException;
 import task1.dto.CoeficientsData;
 import task1.utils.DataParser;
 
 import java.io.IOException;
 
-@Disabled
-@SpringBootTest
+
+@SpringBootTest(classes = App.class)
 @TestPropertySource("classpath:application-test.properties")
 public class DataParserTest {
 

@@ -1,0 +1,34 @@
+<div vehicle-row xmlns:th="http://www.thymeleaf.org">
+    <div th:if="${result== -1}">
+        <div>Skipped from calculation. Producer is not in average purchase list.</div>
+    </div>
+    <div th:unless="${result== -1}" style="width: 100%; float:left">
+        <p>Anual Casco</p>
+        <input type="text" th:value="${#numbers.formatDecimal(result, 1, 'COMMA', 2, 'POINT')}"
+               class="form-control mb-2 col-2" placeholder="-" readonly>
+        <label>Calculated Criterias </label>
+        <input type="checkbox" name="coefficients" id="casco-coeffs"
+               th:each="criteria : ${criterias}"
+               th:text="${criteria}"
+               th:value="${criteria}" disabled checked readonly placeholder="-"/>
+
+        <div class="monthly-casco" th:unless="${duration<2}" style="width: 100%; float:left">
+            <div class="table-responsive text-nowrap">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Payment</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr  th:each="star:${#numbers.sequence(1,duration)}">
+                        <th scope="row" th:text="${star}"></th>
+                        <td th:text="${#numbers.formatDecimal(result/duration, 1, 'COMMA', 2, 'POINT')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

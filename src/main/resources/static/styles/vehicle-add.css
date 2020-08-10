@@ -23,3 +23,12 @@ p {
     margin-top: 1rem;
     margin-bottom: 0.2rem;
 }
+
+input[type=checkbox], input[type=radio] {
+    box-sizing: border-box;
+    margin: 10px!important;
+}
+.monthly-casco{
+    overflow-y: auto;
+    height:300px;
+}

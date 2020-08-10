@@ -1,0 +1,67 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/vehicle-add.css}"/>
+
+    <title>Save Employee</title>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h3>Vehicle Directory</h3>
+    <hr>
+
+    <p class="h4 mb-4">Save Vehicle</p>
+
+    <form action="#" th:action="@{/vehicles/save/}"
+          th:object="${vehicle}" method="POST">
+        <input type="hidden" th:field="*{id}" />
+        <p>Plate Number</p>
+        <input type="text" th:field="*{plateNumber}"
+               class="form-control mb-4 col-2" placeholder="Plate Number" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('plateNumber')}" th:errors="*{plateNumber}"></span>
+
+
+        <p>First Registration</p>
+        <input type="text" th:field="*{firstRegistration}"
+               class="form-control mb-4 col-2" placeholder="First Registration" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('firstRegistration')}" th:errors="*{firstRegistration}"></span>
+
+        <p>Purchase Prise</p>
+        <input type="text" th:field="*{purchasePrise}"
+               class="form-control mb-4 col-2" placeholder="Purchase Prise" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('purchasePrise')}" th:errors="*{purchasePrise}"></span>
+
+        <p>Producer</p>
+        <input type="text" th:field="*{producer}"
+               class="form-control mb-4 col-2" placeholder="Producer" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('producer')}" th:errors="*{producer}"></span>
+
+        <p>Milage</p>
+        <input type="text" th:field="*{milage}"
+               class="form-control mb-4 col-2" placeholder="Milage" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('milage')}" th:errors="*{milage}"></span>
+
+        <p>Previous Indemnity</p>
+        <input type="text" th:field="*{previousIndemnity}"
+               class="form-control mb-4 col-2" placeholder="Previous Indemnity" th:errorclass="error-input">
+        <span class="error" th:if="${#fields.hasErrors('previousIndemnity')}" th:errors="*{previousIndemnity}"></span>
+        <br>
+        <button type="submit" class="btn btn btn-primary btn-condensed col-2">Save</button>
+    </form>
+
+    <hr>
+    <a th:href="@{/vehicles/findall}">Back to vehicle List</a>
+
+</div>
+</body>
+
+</html>
